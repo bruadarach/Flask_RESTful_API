@@ -10,6 +10,90 @@ items = []
 class Item(Resource): # OOP inheritance
     
     def get(self, name): # name of the student
+        item = next(filter(lambda x : x['name'] == name, ItemList), None)
+        # for item in items:
+        #     if item['name'] == name:
+        #         return item # flask restful doesn't need jsonify 
+            
+        return {'item': None}, 200 if item else 404
+
+    def post(self, name):
+        if next(filter(lambda x : x['name'] == name, ItemList), None):
+            return {'message': "An item with name '{}' already exists.".format(name)}, 400
+        
+        data = request.get_json(force=True) # Added! # this part will have an error if Header and body settings are not right in Postman.
+        # force=True means you don't need the content type Header
+        # silent=True  means you don't get error, just returns None.
+        item = {'name': name, 'price': data['price']} # Added!
+        items.append(item)
+        return item, 201 # 201 is to be created! # 202 is to be accepted after the delay of creation
+
+class ItemList(Resource): # ADDED!
+    def get(self):
+        return {'items': items}
+
+
+api.add_resource(Item, '/item/<string:name>') # http://127.0.0.1:5000/student/"student name"
+api.add_resource(ItemList, '/items') # ADDED! 
+
+app.run(port=5000, debug=True)
+
+
+
+'''
+from flask import Flask, request # ADDED !
+from flask_restful import Resource, Api # Resource : api represents
+
+app=Flask(__name__)
+api = Api(app)
+
+items = [] 
+
+class Item(Resource): # OOP inheritance
+    
+    def get(self, name): # name of the student
+        item = next(filter(lambda x : x['name'] == name, ItemList), None)
+        # for item in items:
+        #     if item['name'] == name:
+        #         return item # flask restful doesn't need jsonify 
+            
+        return {'item': None}, 200 if item else 404
+
+    def post(self, name):
+        if next(filter(lambda x : x['name'] == name, ItemList), None):
+            return {'message': "An item with name '{}' already exists.".format(name)}, 400
+        
+        data = request.get_json(force=True) # Added! # this part will have an error if Header and body settings are not right in Postman.
+        # force=True means you don't need the content type Header
+        # silent=True  means you don't get error, just returns None.
+        item = {'name': name, 'price': data['price']} # Added!
+        items.append(item)
+        return item, 201 # 201 is to be created! # 202 is to be accepted after the delay of creation
+
+class ItemList(Resource): # ADDED!
+    def get(self):
+        return {'items': items}
+
+
+api.add_resource(Item, '/item/<string:name>') # http://127.0.0.1:5000/student/"student name"
+api.add_resource(ItemList, '/items') # ADDED! 
+
+app.run(port=5000, debug=True)
+'''
+
+
+'''
+from flask import Flask, request # ADDED !
+from flask_restful import Resource, Api # Resource : api represents
+
+app=Flask(__name__)
+api = Api(app)
+
+items = [] 
+
+class Item(Resource): # OOP inheritance
+    
+    def get(self, name): # name of the student
         for item in items:
             if item['name'] == name:
                 return item # flask restful doesn't need jsonify 
@@ -33,7 +117,8 @@ api.add_resource(Item, '/item/<string:name>') # http://127.0.0.1:5000/student/"s
 api.add_resource(ItemList, '/items') # ADDED! 
 
 app.run(port=5000, debug=True)
-
+'''
+ 
 
 
 '''
